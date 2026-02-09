@@ -1,71 +1,128 @@
 import os
 import csv
 from datetime import datetime
-file_name="daily_life.csv"
+
+FILE_NAME = "daily_life.csv"
+MOODS = ["bad", "okay", "good"]
+
+
 def add_daily():
-     file_exists = os.path.isfile(file_name)
-     today= datetime.today().strftime('%Y-%m-%d')
-     date = input("Enter Date (YYYY-MM-DD): ") or today
-     sleep_hours = float(input("Amount: "))
-     while True:
-         mood = input("mood (bad,good,okey): ").lower()
-         if mood in ["bad","good","okey"]:
-             break
-         else:
-             print("invaled input try[bad,good,okey]")
+    file_exists = os.path.isfile(FILE_NAME)
 
-     money_spent=float(input("how much did you spend: ")) or 0
-     notes= input("Description: ") or "emptiy"
+    today = datetime.today().strftime("%Y-%m-%d")
+    date = input("Enter date (YYYY-MM-DD) [default today]: ") or today
+    sleep_hours = float(input("Sleep hours: "))
 
-     with open(file_name, "a", newline="") as csvfile:
-        writer = csv.writer(csvfile)
+    while True:
+        mood = input("Mood (bad, okay, good): ").lower()
+        if mood in MOODS:
+            break
+        print("Invalid mood. Choose: bad, okay, good")
+
+    money_spent = float(input("Money spent: ") or 0)
+    notes = input("Notes (optional): ") or ""
+
+    with open(FILE_NAME, "a", newline="") as file:
+        writer = csv.writer(file)
         if not file_exists:
-            writer.writerow(["date","mood","sleep_hours","money_spent","notes"])
+            writer.writerow(["date", "mood", "sleep_hours", "money_spent", "notes"])
+        writer.writerow([date, mood, sleep_hours, money_spent, notes])
 
-        writer.writerow([date, mood, sleep_hours, money_spent,notes])
+    print("Entry saved successfully!")
 
-     print("Expense added successfully!")
 
-    
 def show_daily():
-    if not os.path.isfile(file_name):
-        print("No expenses found.")
+    if not os.path.isfile(FILE_NAME):
+        print("No entries found.")
         return
 
-    with open(file_name, "r") as csvfile:
-        reader = csv.reader(csvfile)
-        next(reader)  
+    with open(FILE_NAME, "r") as file:
+        reader = csv.reader(file)
+        header = next(reader, None)
 
-        print(f"{'Date':<12}{'Mood':<10}{'Sleep_hours':<14}{'Money_spent':<16}{"Notes":<20}")
-        print("-" * 59)
+        if not header:
+            print("No entries found.")
+            return
+
+        print(f"{'Date':<12}{'Mood':<8}{'Sleep':<8}{'Money':<10}{'Notes':<20}")
+        print("-" * 58)
+
+        has_data = False
+        for row in reader:
+            has_data = True
+            print(f"{row[0]:<12}{row[1]:<8}{row[2]:<8}{row[3]:<10}{row[4]:<20}")
+
+        if not has_data:
+            print("No entries found.")
+
+
+def summary_daily():
+    if not os.path.isfile(FILE_NAME):
+        print("No entries to analyze.")
+        return
+
+    total_money = 0
+    total_sleep = 0
+    entry_count = 0
+
+    mood_count = {mood: 0 for mood in MOODS}
+    money_by_mood = {mood: 0 for mood in MOODS}
+
+    with open(FILE_NAME, "r") as file:
+        reader = csv.reader(file)
+        next(reader, None)
 
         for row in reader:
-            print(f"{row[0]:<12}{row[1]:<10}{row[2]:<14}{row[3]:<16}{row[4]:<20}")
-   
+            entry_count += 1
+            mood = row[1]
+            sleep = float(row[2])
+            money = float(row[3])
+
+            total_sleep += sleep
+            total_money += money
+            mood_count[mood] += 1
+            money_by_mood[mood] += money
+
+    if entry_count == 0:
+        print("No entries to analyze.")
+        return
+
+    print("\n📊 Analysis")
+    print(f"Average sleep: {total_sleep / entry_count:.2f} hours")
+    print(f"Total money spent: {total_money}")
+
+    print("\nMood breakdown:")
+    for mood in MOODS:
+        print(f"{mood}: {mood_count[mood]} days")
+
+    print("\nMoney spent by mood:")
+    for mood in MOODS:
+        print(f"{mood}: {money_by_mood[mood]}")
 
 
+def main():
+    while True:
+        print("\nDaily Life Analyzer")
+        print("--------------------")
+        print("1. Add daily entry")
+        print("2. View all entries")
+        print("3. Show analysis")
+        print("4. Exit")
+
+        choice = input("Choose an option: ")
+
+        if choice == "1":
+            add_daily()
+        elif choice == "2":
+            show_daily()
+        elif choice == "3":
+            summary_daily()
+        elif choice == "4":
+            print("Goodbye 👋")
+            break
+        else:
+            print("Invalid choice. Try again.")
 
 
-
-
-
-
-
-
-
-while True:
-    print("welcome to daily_life.csv")
-    print("------------------------------")
-    print("1.Add daily entry")
-    print("2.View all entries")
-    print("3.Show analysis")
-    print("4.exit")
-    print("------------------------------")
-    choice=int(input("enter your choose: "))
-    if choice==4:
-        print("goodbye......")
-        break
-    elif choice==1:
-        add_daily()
-    elif choice==2:
-        show_daily()
+if __name__ == "__main__":
+    main()
