@@ -27,7 +27,20 @@ def add_daily():
      print("Expense added successfully!")
 
     
+def show_daily():
+    if not os.path.isfile(file_name):
+        print("No expenses found.")
+        return
 
+    with open(file_name, "r") as csvfile:
+        reader = csv.reader(csvfile)
+        next(reader)  
+
+        print(f"{'Date':<12}{'Mood':<10}{'Sleep_hours':<14}{'Money_spent':<16}{"Notes":<20}")
+        print("-" * 59)
+
+        for row in reader:
+            print(f"{row[0]:<12}{row[1]:<10}{row[2]:<14}{row[3]:<16}{row[4]:<20}")
    
 
 
@@ -54,3 +67,5 @@ while True:
         break
     elif choice==1:
         add_daily()
+    elif choice==2:
+        show_daily()
