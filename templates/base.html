@@ -1,0 +1,21 @@
+</h<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Daily Life Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav>
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('add_daily') }}">Add Entry</a>
+        <a href="{{ url_for('view_daily') }}">View Entries</a>
+        <a href="{{ url_for('summary_daily') }}">Summary</a>
+
+    </nav>
+
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

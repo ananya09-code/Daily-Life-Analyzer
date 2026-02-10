@@ -1,0 +1,25 @@
+{% extends "base.html" %} {% block content %}
+<h2>Daily Life Summary</h2>
+
+<h3>Total Money Spent: {{ total_money }}</h3>
+<h3>Total Sleep Hours: {{ total_sleep }}</h3>
+
+<h3>Mood Breakdown (Number of Days)</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Mood</th>
+      <th>Number of Days</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for mood, count in mood_count.items() %}
+    <tr>
+      <td>{{ mood | capitalize }}</td>
+      <td>{{ count }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

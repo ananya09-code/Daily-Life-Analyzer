@@ -1,0 +1,21 @@
+{% extends "base.html" %} {% block content %}
+<h2>All Daily Entries</h2>
+<table>
+  <tr>
+    <th>Date</th>
+    <th>Mood</th>
+    <th>Sleep Hours</th>
+    <th>Money Spent</th>
+    <th>Notes</th>
+  </tr>
+  {% for entry in entries %}
+  <tr>
+    <td>{{ entry.date }}</td>
+    <td>{{ entry.mood }}</td>
+    <td>{{ entry.sleep_hours }}</td>
+    <td>{{ entry.money_spent }}</td>
+    <td>{{ entry.notes }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}
